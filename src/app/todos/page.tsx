@@ -1,6 +1,6 @@
 'use client'
 
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +41,9 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { addTodo } from '../_actions/todos'
 import { useFormState, useFormStatus } from 'react-dom'
+import { userStore } from '@/store/userStore'
+import { redirect } from 'next/navigation'
+import { todoStore } from '@/store/todoStore'
 
 const Todos = () => {
   const [obj, setObj] = useState({
@@ -51,6 +54,21 @@ const Todos = () => {
     startDate: new Date(),
     expectedFinishDate: new Date(),
   })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const { fetchUserTodos, todos } = todoStore()
+
+  const { user } = userStore()
+
+  useEffect(() => {
+    if (user) {
+      fetchUserTodos(user.id)
+    } else {
+      redirect('/login')
+    }
+  }, [user])
+
+  console.log(todos)
 
   const [errors, action] = useFormState(addTodo, {})
 
@@ -101,6 +119,12 @@ const Todos = () => {
     )
   }
 
+  useEffect(() => {
+    if (errors.success && errors.newTodo !== null) {
+      setIsDialogOpen(false)
+    }
+  }, [errors])
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
       <div className='flex flex-row justify-between max-w-xs items-start'>
@@ -132,7 +156,7 @@ const Todos = () => {
             <div className=''>{ActionMenu()}</div>
           </div>
         </div>
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <div className='w-full bg-slate-200 py-10 rounded-md m-4 border-2 border-dashed border-gray-300 cursor-pointer'>
               <div className='flex flex-row items-center gap-3 text-gray-500 w-fit mx-auto'>
@@ -148,6 +172,7 @@ const Todos = () => {
             </DialogHeader>
             <div className=''>
               <form action={action} className='space-y-3'>
+                {user && <input type='hidden' name='userId' value={user.id} />}
                 <div className='flex flex-col items-start gap-2'>
                   <label htmlFor='title'>Title*</label>
                   <input

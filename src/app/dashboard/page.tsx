@@ -1,16 +1,19 @@
-import React from 'react'
-import prisma from '../db/db'
+'use client'
+
+import React, { useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { userStore } from '@/store/userStore'
 
-export async function getAllTodos() {
-  const todos = await prisma.todos.count()
+import { redirect } from 'next/navigation'
 
-  console.log(todos)
-  return todos
-}
+const Dashboard = () => {
+  const { user, isAuthenticated } = userStore()
 
-const Dashboard = async () => {
-  const [allTodos] = await Promise.all([getAllTodos()])
+  useEffect(() => {
+    if (!user) {
+      redirect('/login')
+    }
+  }, [user])
 
   return (
     <div>
@@ -21,7 +24,7 @@ const Dashboard = async () => {
             <CardTitle className='text-3xl'>All Tasks</CardTitle>
           </CardHeader>
           <CardContent>
-            <h1 className='font-medium text-5xl'>{allTodos}</h1>
+            <h1 className='font-medium text-5xl'>{0}</h1>
           </CardContent>
         </Card>
         <Card className='max-w-sm w-full bg-gradient-to-r from-teal-400 to-yellow-200'>
@@ -29,7 +32,7 @@ const Dashboard = async () => {
             <CardTitle className='text-3xl'>Completed Tasks</CardTitle>
           </CardHeader>
           <CardContent>
-            <h1 className='font-medium text-5xl'>{allTodos}</h1>
+            <h1 className='font-medium text-5xl'>{0}</h1>
           </CardContent>
         </Card>
         <Card className='max-w-sm w-full bg-gradient-to-r from-amber-500 to-pink-500'>
@@ -37,7 +40,7 @@ const Dashboard = async () => {
             <CardTitle className='text-3xl'>On-Going Tasks</CardTitle>
           </CardHeader>
           <CardContent>
-            <h1 className='font-medium text-5xl'>{allTodos}</h1>
+            <h1 className='font-medium text-5xl'>{0}</h1>
           </CardContent>
         </Card>
       </div>
