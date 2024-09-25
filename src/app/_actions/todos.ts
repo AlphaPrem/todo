@@ -12,30 +12,41 @@ const verify = z.object({
   status: z.enum(['PENDING', 'COMPLETED', 'NOT_STARTED']),
   startDate: z.coerce.date(),
   expectedFinishDate: z.coerce.date(),
+  userId: z.string(),
 })
 
 export async function addTodo(prevState: unknown, formData: FormData) {
-  const result = verify.safeParse(Object.fromEntries(formData.entries()))
+  try {
+    const result = verify.safeParse(Object.fromEntries(formData.entries()))
 
-  if (result.success === false) {
-    return result.error.formErrors.fieldErrors
+    if (result.success === false) {
+      return result.error.formErrors.fieldErrors
+    }
+
+    const data = result.data
+
+    const newTodo = await prisma.todos.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        priority: data.priority,
+        status: data.status,
+        userId: data.userId,
+        startDate: data.startDate,
+        expectedFinishDate: data.expectedFinishDate,
+      },
+    })
+
+    return { newTodo: newTodo, success: true }
+  } catch (error: any) {
+    return { error: error.message }
   }
+}
 
-  const data = result.data
-
-  await prisma.todos.create({
-    data: {
-      title: data.title,
-      description: data.description,
-      priority: data.priority,
-      status: data.status,
-      startDate: data.startDate,
-      expectedFinishDate: data.expectedFinishDate,
-    },
+export async function fetchUserTodosAction(userId: string) {
+  const todos = await prisma.todos.findMany({
+    where: { userId: userId },
   })
 
-  revalidatePath('/')
-  revalidatePath('/todos')
-
-  redirect('/todos')
+  return todos
 }
