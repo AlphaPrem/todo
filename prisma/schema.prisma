@@ -28,7 +28,7 @@ model Todos {
   title              String
   description        String?
   status             Status    @default(NOT_STARTED)
-  priority           Priority  @default(MEDIUM)
+  priority           Priority  @default(LOW)
   startDate          DateTime? @default(now())
   expectedFinishDate DateTime
   userId             String

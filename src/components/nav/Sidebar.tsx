@@ -50,7 +50,7 @@ const Sidebar = ({
               href={item.href}
             >
               <item.icon className={`w-5 h-5 text-black`} />
-              <h3 className={`text-sm text-black`}>{item.title}</h3>
+              <h3 className={`text-lg text-black`}>{item.title}</h3>
             </Link>
           ))}
         </div>
