@@ -141,7 +141,7 @@ const Todos = () => {
   }, [errors])
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
+    <div className='grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4'>
       <div className=''>
         <div className='flex flex-row justify-between max-w-xs items-start'>
           <h4 className='text-2xl font-medium'>To Do</h4>
@@ -191,7 +191,7 @@ const Todos = () => {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <div className='w-full bg-slate-200 py-10 rounded-md m-4 border-2 border-dashed border-gray-300 cursor-pointer'>
+            <div className='w-full bg-slate-200 py-10 rounded-md my-3 border-2 border-dashed border-gray-300 cursor-pointer'>
               <div className='flex flex-row items-center gap-3 text-gray-500 w-fit mx-auto'>
                 <CirclePlus />
                 <h2 className='text-lg font-mediums'>Add</h2>
