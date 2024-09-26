@@ -1,6 +1,6 @@
 'use client'
 
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +44,18 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { userStore } from '@/store/userStore'
 import { redirect } from 'next/navigation'
 import { todoStore } from '@/store/todoStore'
+import TodoCard from '../../components/ui/TodoCard'
+
+interface Errors {
+  success?: boolean
+  newTodo?: object
+  title?: string
+  description?: string
+  priority?: string
+  status?: string
+  startDate?: string
+  expectedFinishDate?: string
+}
 
 const Todos = () => {
   const [obj, setObj] = useState({
@@ -59,6 +71,7 @@ const Todos = () => {
   const { fetchUserTodos, todos } = todoStore()
 
   const { user } = userStore()
+  const [errors, action] = useFormState<Errors, unknown>(addTodo, {})
 
   useEffect(() => {
     if (user) {
@@ -68,9 +81,11 @@ const Todos = () => {
     }
   }, [user])
 
-  console.log(todos)
-
-  const [errors, action] = useFormState(addTodo, {})
+  useEffect(() => {
+    if (user !== null && errors.success && errors.newTodo) {
+      fetchUserTodos(user.id)
+    }
+  }, [errors])
 
   const priority = [
     { value: 'LOW', display: 'Low' },
@@ -127,18 +142,36 @@ const Todos = () => {
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
-      <div className='flex flex-row justify-between max-w-xs items-start'>
-        <h4 className='text-2xl font-medium'>To Do</h4>
-        <div className='flex flex-row items-center gap-3'>
-          <CirclePlus />
-          <div className=''>{ActionMenu()}</div>
+      <div className=''>
+        <div className='flex flex-row justify-between max-w-xs items-start'>
+          <h4 className='text-2xl font-medium'>To Do</h4>
+          <div className='flex flex-row items-center gap-3'>
+            <CirclePlus />
+            <div className=''>{ActionMenu()}</div>
+          </div>
+        </div>
+        <div className='space-y-3 my-3'>
+          {todos
+            .filter((todo) => todo.status === 'NOT_STARTED')
+            .map((todo) => (
+              <TodoCard todo={todo} key={todo.id} />
+            ))}
         </div>
       </div>
-      <div className='flex flex-row justify-between max-w-xs items-start'>
-        <h4 className='text-2xl font-medium'>Doing</h4>
-        <div className='flex flex-row items-center gap-3'>
-          <CirclePlus />
-          <div className=''>{ActionMenu()}</div>
+      <div className=''>
+        <div className='flex flex-row justify-between max-w-xs items-start'>
+          <h4 className='text-2xl font-medium'>Doing</h4>
+          <div className='flex flex-row items-center gap-3'>
+            <CirclePlus />
+            <div className=''>{ActionMenu()}</div>
+          </div>
+        </div>
+        <div className='space-y-3 my-3'>
+          {todos
+            .filter((todo) => todo.status === 'PENDING')
+            .map((todo) => (
+              <TodoCard todo={todo} key={todo.id} />
+            ))}
         </div>
       </div>
       <div className='flex flex-row justify-between items-start max-w-xs'>
