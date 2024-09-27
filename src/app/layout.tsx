@@ -17,7 +17,6 @@ export default function RootLayout({
       <body>
         <div className='hidden lg:block'>
           <Sidebar />
-          {verify}
         </div>
         {children}
       </body>
