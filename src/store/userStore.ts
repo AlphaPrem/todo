@@ -16,9 +16,11 @@ export const userStore = create<UserStoreInterface>((set) => ({
       user,
       isAuthenticated: true,
     }),
-  logout: () =>
+  logout: () => (
     set({
       user: null,
       isAuthenticated: false,
     }),
+    localStorage.removeItem('user')
+  ),
 }))

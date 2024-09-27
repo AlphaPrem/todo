@@ -2,6 +2,7 @@
 
 import prisma from '../db/db'
 import { z } from 'zod'
+import { generateJwtToken } from './util'
 
 const loginVerify = z.object({
   email: z.string().email(),
@@ -62,20 +63,28 @@ export const loginUser = async (prevState: any, formData: FormData) => {
 
     // 1. Find user by email
     const user = await prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: data.email, password: data.password },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        password: false,
+      },
     })
 
     // 2. Check if user exists
     if (!user) {
-      return { error: 'User not found!' }
+      return { error: 'Invalid credentials or User not found!' }
     }
 
-    if (data.password !== user.password) {
-      throw new Error('Invalid password!')
-    }
+    // setting user in localstorage
 
     // 5. Return success response
-    return { user: user, success: true }
+    return {
+      user: { ...user, token: generateJwtToken(user) },
+      success: true,
+    }
   } catch (error: any) {
     // Handle errors
     return { error: error.message }

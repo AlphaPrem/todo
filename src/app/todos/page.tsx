@@ -45,17 +45,7 @@ import { userStore } from '@/store/userStore'
 import { redirect } from 'next/navigation'
 import { todoStore } from '@/store/todoStore'
 import TodoCard from '../../components/ui/TodoCard'
-
-interface Errors {
-  success?: boolean
-  newTodo?: object
-  title?: string
-  description?: string
-  priority?: string
-  status?: string
-  startDate?: string
-  expectedFinishDate?: string
-}
+import { Errors } from '../interface/Errors'
 
 const Todos = () => {
   const [obj, setObj] = useState({

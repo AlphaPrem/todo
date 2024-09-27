@@ -15,6 +15,8 @@ const Dashboard = () => {
     }
   }, [user])
 
+  console.log(user)
+
   return (
     <div>
       <h2 className='text-2xl font-medium my-2'>Statistics</h2>

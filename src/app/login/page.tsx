@@ -3,13 +3,15 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormState } from 'react-dom'
 import { loginUser } from '../_actions/user'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { userStore } from '@/store/userStore'
 import { redirect } from 'next/navigation'
+import { Errors } from '../interface/Errors'
+import jwt, { Secret } from 'jsonwebtoken'
 
 const Login = () => {
   const [obj, setObj] = useState({
@@ -17,13 +19,14 @@ const Login = () => {
     password: '',
   })
 
-  const { user, isAuthenticated, setUser } = userStore()
+  const { setUser } = userStore()
 
-  const [errors, action] = useFormState(loginUser, null)
+  const [errors, action] = useFormState<Errors, unknown>(loginUser, null)
 
   useEffect(() => {
     if (errors !== null && errors.success) {
       setUser(errors.user)
+      localStorage.setItem('user', JSON.stringify(errors.user))
       redirect('/dashboard')
     }
   }, [errors])
