@@ -11,7 +11,6 @@ import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { userStore } from '@/store/userStore'
 import { redirect } from 'next/navigation'
 import { Errors } from '../interface/Errors'
-import jwt, { Secret } from 'jsonwebtoken'
 
 const Login = () => {
   const [obj, setObj] = useState({
