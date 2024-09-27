@@ -1,11 +1,5 @@
+import { User } from '@/app/interface/User'
 import { create } from 'zustand'
-
-interface User {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-}
 
 interface UserStoreInterface {
   user: User | null

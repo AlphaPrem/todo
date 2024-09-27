@@ -1,5 +1,5 @@
 import React from 'react'
-import { TodoInterface } from '../../app/_components/interfaces'
+
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { TodoInterface } from '@/app/interface/Todo'
 
 interface TodoItemProps {
   todo: TodoInterface

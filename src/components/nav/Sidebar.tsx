@@ -12,9 +12,18 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { Menu } from 'lucide-react'
-import { DropdownMenu, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { userStore } from '@/store/userStore'
+import { User } from '@/app/interface/User'
 
 const link = [
   { icon: DashboardIcon, title: 'Dashboard', href: 'dashboard' },
@@ -40,6 +49,39 @@ const Sidebar = () => {
 
   if (pathEnd === 'login' || pathEnd === 'register') {
     return
+  }
+
+  const renderProfile = (user: User | null) => {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className='flex flex-row items-center gap-4'>
+            <Avatar>
+              <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <h3>{user ? user.firstName : 'Undefined'}</h3>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='center'>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <Link href='/profile'>
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+            </Link>
+            <Link href='/setting'>
+              <DropdownMenuItem>Setting</DropdownMenuItem>
+            </Link>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className='text-destructive'>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
   }
 
   if (isMobile) {
@@ -85,22 +127,7 @@ const Sidebar = () => {
                 ))}
               </div>
             </div>
-            <div className=''>
-              <DropdownMenu>
-                <DropdownMenuTrigger className='w-full' asChild>
-                  <div className='flex flex-row items-center gap-4'>
-                    <Avatar>
-                      <AvatarImage
-                        src='https://github.com/shadcn.png'
-                        alt='@shadcn'
-                      />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <h3>{user ? user.firstName : 'Undefined'}</h3>
-                  </div>
-                </DropdownMenuTrigger>
-              </DropdownMenu>
-            </div>
+            <div className=''>{renderProfile(user)}</div>
           </div>
         </SheetContent>
       </Sheet>
@@ -144,22 +171,7 @@ const Sidebar = () => {
             ))}
           </div>
         </div>
-        <div className=''>
-          <DropdownMenu>
-            <DropdownMenuTrigger className='w-full' asChild>
-              <div className='flex flex-row items-center gap-4'>
-                <Avatar>
-                  <AvatarImage
-                    src='https://github.com/shadcn.png'
-                    alt='@shadcn'
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <h3>{user ? user.firstName : 'Undefined'}</h3>
-              </div>
-            </DropdownMenuTrigger>
-          </DropdownMenu>
-        </div>
+        <div className=''>{renderProfile(user)}</div>
       </div>
     </div>
   )
