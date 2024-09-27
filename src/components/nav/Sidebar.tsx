@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import {
   VercelLogoIcon,
   DashboardIcon,
@@ -42,13 +42,19 @@ const categories = [
 const Sidebar = () => {
   const isMobile = useMediaQuery({ maxWidth: 1023 })
 
-  const { user } = userStore()
+  const { user, logout } = userStore()
 
   const pathname = usePathname()
   const pathEnd = pathname.split('/').pop()
 
   if (pathEnd === 'login' || pathEnd === 'register') {
     return
+  }
+
+  const handleLogout = (e: MouseEvent) => {
+    e.preventDefault()
+
+    logout()
   }
 
   const renderProfile = (user: User | null) => {
@@ -75,7 +81,10 @@ const Sidebar = () => {
             </Link>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='text-destructive'>
+            <DropdownMenuItem
+              className='text-destructive'
+              onClick={(e) => handleLogout(e)}
+            >
               Logout
             </DropdownMenuItem>
           </DropdownMenuGroup>
